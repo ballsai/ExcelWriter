@@ -8,8 +8,8 @@ def readFile(files_list):
     for file in files_list:
         try:
             with open(file, 'r') as f:
-                line = f.readlines()
-                if re.search('.*#show clock', line):
+                line = f.read()
+                if re.search('', line):
                     print(line)
 
         except IOError:
@@ -17,9 +17,9 @@ def readFile(files_list):
 
 def matchFilename(path, pattern_list):
     for pattern in pattern_list:
-        files_list( glob( path + pattern ))
+        files_list.extend( glob( path + pattern ))
         readFile(files_list)
 
-path = '/'                 # enter path name here
-pattern_list = ['*']         # enter pattern here
+path = 'All Configure/'                 # enter path name here
+pattern_list = ['*1_all*']         # enter pattern here
 matchFilename(path, pattern_list)       # search matching filename
