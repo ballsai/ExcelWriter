@@ -3,7 +3,7 @@ import re
 class FileReader:
     def __init__(self,path):
         self.path = path
-        self.fields = []
+        self.details = []
         self.lines = []
 
     def readLines(self):
@@ -13,13 +13,13 @@ class FileReader:
         except IOError:
             print('Path does not exist')
 
-    def getField(self, field, keyword):
+    def getDetail(self, header_name, keyword):
         temp = []
-        temp.append(field)
+        temp.append(header_name)
         for line in self.lines:
             if re.search(keyword, line):
                 temp.append(re.sub(keyword,'',line))
-                self.fields.append(temp)
+                self.details.append(temp)
                 break
 
 
@@ -33,11 +33,12 @@ class FileReader:
                     readBetweenLines = True
                     continue
                 elif re.search(end, line):
-                    between = False
+                    readBetweenLines = False
                     break
                 elif readColumn:
                     ls.append(line.split())    
                     readColumn = False
+                    continue
                 elif readBetweenLines:
                     ls.append(re.split(r'\s{2,}',line))
             return ls

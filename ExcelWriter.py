@@ -15,13 +15,13 @@ def getLines(f, start, end):
 def main():
     files = FileList(PATH,FILE_PATTERN)
     filelist = files.listOfFiles()
-
+    i = 0    
     for fl in filelist:
 
         f = FileReader(fl)
         
         f.readLines()
-        f.getField('Name','(#.*show ver.*|(>|#)enable$)')
+        f.getField('Name','(#.*show ver.*|(>|#).*enable$)')
         f.getField('Model','^Model ([n]|[N])umber.*:')
 
         data_0 = DataFrameWriter(f.fields)
@@ -35,13 +35,15 @@ def main():
         data_1 = DataFrameWriter(lines_1)
         data_1.listToDataFrame()
         data_1.newHeader()
-
-        data_2 = DataFrameWriter(lines_2)
-        data_2.listToDataFrame()
-        data_2.newHeader()
+        i += 1
+        if data_1.df.empty:
+                print(i,f.path)
+        # data_2 = DataFrameWriter(lines_2)
+        # data_2.listToDataFrame()
+        # data_2.newHeader()
     
         # data_1.mergeDataFrame(data_2.df)
-        print(data_2.df)
+        # print(data_1.df.columns)
 
         # data_0.concatDataFrame(data_1.df)
         # print(data_0.df)
