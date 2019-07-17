@@ -6,5 +6,5 @@ class FileList:
         self.filename = filename
 
     def listOfFiles(self):
-        fl = glob(self._dir+self.filename)
-        return fl
+        path = glob(self._dir+self.filename) 
+        return path

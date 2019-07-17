@@ -6,27 +6,45 @@ from FileReader import FileReader
 from DataFrameWriter import DataFrameWriter
 from FileList import FileList
 
-_file = []
-PATH = './All Configure/'
+PATH = '../All Configure/'
 FILE_PATTERN = '*1_all*'
-KEYWORD = ['.*#show interface description','.*#show interface status$','.*#show interface status | i connected']
+KEYWORD = ['.*#show interface description','.*#show interface status$','.*#show interface status.*i connected$']
+def getLines(f, start, end):
+    return f.findText(start,end)
 
-def initList(_file, filelist):
-    for i in range(0, len(filelist)):
-        _file.append(0)
+def main():
+    files = FileList(PATH,FILE_PATTERN)
+    filelist = files.listOfFiles()
 
-files = FileList(PATH,FILE_PATTERN)
-filelist = files.listOfFiles()
-initList(_file, filelist)
+    for fl in filelist:
 
-for i in range(0, len(filelist)):
-    _file[i] = FileReader(filelist[i])
-    _file[i].readLines()
-    list1 = _file[i].findText(KEYWORD[0],KEYWORD[1])
-    list2 = _file[i].findText(KEYWORD[1],KEYWORD[2])
-    d1 = DataFrameWriter(list1)
-    d1.listToDataFrame()
-    d1.newHeader()
-    d2 = DataFrameWriter(list2)
-    d2.listToDataFrame()
-    d2.newHeader()
+        f = FileReader(fl)
+        
+        f.readLines()
+        f.getField('Name','(#.*show ver.*|(>|#)enable$)')
+        f.getField('Model','^Model ([n]|[N])umber.*:')
+
+        data_0 = DataFrameWriter(f.fields)
+        data_0.listToDataFrame()
+        data_0.transposeDataFrame()
+        data_0.newHeader()
+
+        lines_1 = getLines(f, KEYWORD[0], KEYWORD[1])
+        lines_2 = getLines(f, KEYWORD[1], KEYWORD[2])
+
+        data_1 = DataFrameWriter(lines_1)
+        data_1.listToDataFrame()
+        data_1.newHeader()
+
+        data_2 = DataFrameWriter(lines_2)
+        data_2.listToDataFrame()
+        data_2.newHeader()
+    
+        # data_1.mergeDataFrame(data_2.df)
+        print(data_2.df)
+
+        # data_0.concatDataFrame(data_1.df)
+        # print(data_0.df)
+
+
+main()
