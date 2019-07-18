@@ -1,13 +1,13 @@
 import pandas as pd
 
 class DataFrameWriter:
-    def __init__(self, ls):
-        self.ls = ls
+    def __init__(self, _list):
+        self._list = _list
         self.df = ''
         self.empty_df = []
     
-    def listToDataFrame(self):
-        self.df = pd.DataFrame(self.ls)
+    def getDataFrame(self):
+        self.df = pd.DataFrame(self._list)
     
     def transposeDataFrame(self):
         self.df = self.df.T
@@ -15,9 +15,9 @@ class DataFrameWriter:
     def concatDataFrame(self, df_x):
         self.df = pd.concat([self.df, df_x], axis = 1)
 
-    def mergeDataFrame(self, df_x):
-        if (not self.df.empty) and (not df_x.empty) and ('Port' in df_x.columns):
-            self.df = self.df.merge(df_x, left_on = 'Interface', right_on = 'Port' )
+    def mergeDataFrame(self, data):
+        if (not self.df.empty) and (not data.df.empty) and ('Port' in data.df.columns):
+            self.df = self.df.merge(data.df, left_on = 'Interface', right_on = 'Port')
     
     def isEmptyDataFrame(self, f):
         if self.df.empty:
