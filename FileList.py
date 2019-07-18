@@ -1,10 +1,13 @@
 from glob import glob
+import os
 
 class FileList:
-    def __init__(self, _dir, filename):
+    def __init__(self, _dir, regex):
         self._dir = _dir
-        self.filename = filename
+        self.regex = regex
+        self.pathList = []
 
     def listOfFiles(self):
-        path = glob(self._dir+self.filename) 
-        return path
+        self.pathList = glob(self._dir+self.regex)
+        return self.pathList
+    
