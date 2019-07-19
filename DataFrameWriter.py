@@ -8,16 +8,13 @@ class DataFrameWriter:
     
     def getDataFrame(self):
         self.df = pd.DataFrame(self._list)
-    
-    def transposeDataFrame(self):
-        self.df = self.df.T
 
     def concatDataFrame(self, df_x):
         self.df = pd.concat([self.df, df_x], axis = 1)
 
     def mergeDataFrame(self, data):
-        if (not self.df.empty) and (not data.df.empty) and ('Port' in data.df.columns):
-            self.df = self.df.merge(data.df, left_on = 'Interface', right_on = 'Port')
+        if (not self.df.empty) and (not data.df.empty) :
+            self.df = self.df.merge(data.df, on = 0)
     
     def isEmptyDataFrame(self, f):
         if self.df.empty:
