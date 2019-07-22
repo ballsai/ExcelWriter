@@ -4,12 +4,11 @@ class DataFrameBuilder:
 
     def __init__(self, dataframe):
         self.dataframe = dataframe
+        self.columns = []
 
     def __add__(self, inp):
         if not (self.dataframe.empty or inp.dataframe.empty):
             self.dataframe = self.dataframe.merge(inp.dataframe, how = 'left', on=0)
-        
-
         return DataFrameBuilder(self.dataframe)
 
     def dropColumn(self, cols):

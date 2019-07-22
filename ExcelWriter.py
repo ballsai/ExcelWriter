@@ -30,7 +30,7 @@ def main():
     try:
         with os.scandir(directory) as entries:
             for entry in entries:
-                f = FileReader(directory+entry.name)
+                f = FileReader(directory + entry.name)
                 f.readFile()
                 # search section in text by substring
                 hostname = f.requiredHostname()
@@ -53,7 +53,7 @@ def main():
                     status = pd.DataFrame(interface_status)
                     status_df = DataFrameBuilder(status)
 
-                    frame = desc_df + status_df
+                    # frame = desc_df + status_df
 
                     # if len(frame.dataframe.columns) == 4:
                     #     frame.addColumn(cols =  ['Interface','Status','Protocol','Description']) 
@@ -68,25 +68,28 @@ def main():
                     # frame.insertColumn(col_index = 0, col_name = 'Serial No.', value = [serial]+['']*(len(frame.dataframe)-1))
                     # frame.insertColumn(col_index = 0, col_name = 'Model No.', value = [model]+['']*(len(frame.dataframe)-1))
                     # frame.insertColumn(col_index = 0, col_name = 'Hostname', value = [hostname]+['']*(len(frame.dataframe)-1))
-                    print(tabulate(desc_df.dataframe.sort_values(0), headers='keys', tablefmt='psql'))
-
+                    # print(hostname) 
+                    # print(tabulate(status_df.dataframe, headers='keys', tablefmt='psql'))
+                    # print(hostname+' %d'%len(status_df.dataframe.columns))
                     # excel = ExcelWriter(frame.dataframe, hostname)
                     # excel.writeExcel()
+                    if len(status_df.dataframe.columns) != 0 and len(status_df.dataframe.columns) != 5:
+                        detail.append("%s : %d"%(hostname, len(status_df.dataframe.columns)))
                         
     except IOError:
         print('cannot open directory name ',directory )
 
-    try:
-        with open("columns.txt", "w") as output:
-            output.write('\n'.join(column))
-        print('successful writing')
-    except IOError:
-        print('cannot write file name log.txt')
-    
     # try:
-    #     with open("details.txt", "w") as output:
-    #         output.write('\n'.join(detail))
+    #     with open("columns.txt", "w") as output:
+    #         output.write('\n'.join(column))
+    #     print('successful writing')
     # except IOError:
     #     print('cannot write file name log.txt')
+    
+    try:
+        with open("details.txt", "w") as output:
+            output.write('\n'.join(detail))
+    except IOError:
+        print('cannot write file name log.txt')
 
 main()        

@@ -58,7 +58,7 @@ class FileReader:
 
     def requiredInterfaceDescription(self):
         substring = '.*#show interface description'
-        interfaces = '(Interface|Fa|Gi|Po|Vl|Te).*'
+        # interfaces = '(Interface|Fa|Gi|Po|Vl|Te).*'
         interface_description = []
         modify_interface_description = []
         read_section = False
@@ -68,7 +68,8 @@ class FileReader:
                 read_section = True
                 continue
             elif read_section:
-                if re.search(interfaces, line): 
+                # if re.search(interfaces, line):
+                if not (self.hostname in line):
                     interface_description.append(line)
                 else:
                     read_section = False
@@ -80,9 +81,10 @@ class FileReader:
         return modify_interface_description
     
     def requiredInterfaceStatus(self):
-        substring = '.*#show interface status'
-        interfaces = '(Interface|Fa|Gi|Po|Vl|Te).*'
-        separator = '\s{2,}.*(connected|notconnect|disabled)'
+        substring = '.*#show interface status$'
+        interfaces = '(Interface|(Fa)|Gi|Po|Vl|Te).*'
+        # separator = '\s{2,}.*(connected|notconnect|disabled|inactive|monitoring) | Name | Status | connected.*(connected|disabled)'
+        separator = '\s{1,}.*(connected|notconnect|disabled|inactive|monitoring) | Name | Status'
         replace = ''
         interface_status = []
         modify_interface_status = []
@@ -91,17 +93,29 @@ class FileReader:
 
         for line in self.text:
             if re.search(substring, line):
-                read_section = True
                 continue
+                read_section = True
             elif read_section:
-                if re.search(interfaces, line): 
-                    interface_status.append(line)
+                if re.search(substring, line):
+                    continue
+                elif not (self.hostname in line):
+                    if re.search(interfaces, line): 
+                        interface_status.append(line)
                 else:
                     read_section = False
                     break
         
         for element in interface_status:
-            modify_interface_status.append(re.split(r'\s{1,}', re.sub(separator, replace, element)))
+            # modify_interface_status.append(re.split(r'\s{1,}', re.sub(separator, replace, element)))
+            items = re.sub(separator, replace, element)
+            items = re.split(r'\s{1,}',items)
+            # temp = re.findall('.*?()', temp)
+            # items = list(filter(None, items))
+
+            if len(items) == 6:
+                items[4:6] = [''.join(items[4:6])]
+            
+            modify_interface_status.append(items)
         
         return modify_interface_status
     
