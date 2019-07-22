@@ -7,7 +7,9 @@ class DataFrameBuilder:
 
     def __add__(self, inp):
         if not (self.dataframe.empty or inp.dataframe.empty):
-            self.dataframe = self.dataframe.merge(inp.dataframe, on = 0)
+            self.dataframe = self.dataframe.merge(inp.dataframe, how = 'left', on=0)
+        
+
         return DataFrameBuilder(self.dataframe)
 
     def dropColumn(self, cols):
