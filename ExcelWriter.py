@@ -23,13 +23,15 @@ class ExcelWriter:
             print('cannot writing file name %s'%self.filename )
 
 def main():
-
+    log = []
     directory = '../All Configure/'
-    column = []
-    detail = []
+    except_file = 'THCBSLSUIN08,no-ip,console,4_log,.txt'
     try:
         with os.scandir(directory) as entries:
             for entry in entries:
+                if entry.name == except_file:
+                    continue
+
                 f = FileReader(directory + entry.name)
                 f.readFile()
                 # search section in text by substring
@@ -48,10 +50,10 @@ def main():
                     # if not version:
                     #     detail.append(hostname)
 
-                    desc = pd.DataFrame(interface_description)
-                    desc_df = DataFrameBuilder(desc)
+                    description = pd.DataFrame(interface_description)
+                    description_dataframe = DataFrameBuilder(description)
                     status = pd.DataFrame(interface_status)
-                    status_df = DataFrameBuilder(status)
+                    status_dataframe = DataFrameBuilder(status)
 
                     # frame = desc_df + status_df
 
@@ -69,27 +71,18 @@ def main():
                     # frame.insertColumn(col_index = 0, col_name = 'Model No.', value = [model]+['']*(len(frame.dataframe)-1))
                     # frame.insertColumn(col_index = 0, col_name = 'Hostname', value = [hostname]+['']*(len(frame.dataframe)-1))
                     # print(hostname) 
-                    # print(tabulate(status_df.dataframe, headers='keys', tablefmt='psql'))
+                    #     print(tabulate(desc_df.dataframe, headers='keys', tablefmt='psql'))
                     # print(hostname+' %d'%len(status_df.dataframe.columns))
                     # excel = ExcelWriter(frame.dataframe, hostname)
                     # excel.writeExcel()
-                    if len(status_df.dataframe.columns) != 0 and len(status_df.dataframe.columns) != 5:
-                        detail.append("%s : %d"%(hostname, len(status_df.dataframe.columns)))
-                        
+            
     except IOError:
         print('cannot open directory name ',directory )
-
+    
     # try:
-    #     with open("columns.txt", "w") as output:
-    #         output.write('\n'.join(column))
-    #     print('successful writing')
+    #     with open("log.txt", "w") as output:
+    #         output.write('\n'.join(log))
     # except IOError:
     #     print('cannot write file name log.txt')
-    
-    try:
-        with open("details.txt", "w") as output:
-            output.write('\n'.join(detail))
-    except IOError:
-        print('cannot write file name log.txt')
 
 main()        

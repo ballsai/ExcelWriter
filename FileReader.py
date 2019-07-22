@@ -57,62 +57,64 @@ class FileReader:
         return self.version
 
     def requiredInterfaceDescription(self):
-        substring = '.*#show interface description'
-        # interfaces = '(Interface|Fa|Gi|Po|Vl|Te).*'
+        command_substring = '.*#show interface description'
+        interfaces_substring = '(Interface|Port|(Fa)|(Gi)|(Po)|(Te)|(Vl)).*'
         interface_description = []
         modify_interface_description = []
         read_section = False
         
         for line in self.text:
-            if re.search(substring, line):
+            if re.search(command_substring, line):
                 read_section = True
                 continue
             elif read_section:
-                # if re.search(interfaces, line):
                 if not (self.hostname in line):
-                    interface_description.append(line)
+                    if re.search(interfaces_substring, line): 
+                        interface_description.append(line)
                 else:
                     read_section = False
                     break
         
         for element in interface_description:
-            modify_interface_description.append(re.split(r'\s{2,}', element))
+            if element == interface_description[0]: # if label name, then split label name to column name
+                items = element.split()
+            else: 
+                items = re.split(r'\s{4}', element) # split a string by 4 whitespaces
+                items = list(filter(None, items)) # remove empty string by filter
+            modify_interface_description.append(items)
 
         return modify_interface_description
     
     def requiredInterfaceStatus(self):
-        substring = '.*#show interface status$'
-        interfaces = '(Interface|(Fa)|Gi|Po|Vl|Te).*'
-        # separator = '\s{2,}.*(connected|notconnect|disabled|inactive|monitoring) | Name | Status | connected.*(connected|disabled)'
-        separator = '\s{1,}.*(connected|notconnect|disabled|inactive|monitoring) | Name | Status'
-        replace = ''
+        command_substring = '.*#show interface status$'
+        interfaces_substring = '(Interface|Port|(Fa)|(Gi)|(Po)|(Te)|(Vl)).*'
+        remove_substring = '\s{1,}.*(connected|notconnect|disabled|inactive|monitoring)|Name|Status'
+        replace_string = ''
         interface_status = []
         modify_interface_status = []
-        test = []
         read_section = False
 
         for line in self.text:
-            if re.search(substring, line):
-                continue
+            if re.search(command_substring, line):
                 read_section = True
+                continue
             elif read_section:
-                if re.search(substring, line):
+                if re.search(command_substring, line):
                     continue
                 elif not (self.hostname in line):
-                    if re.search(interfaces, line): 
+                    if re.search(interfaces_substring, line): 
                         interface_status.append(line)
                 else:
                     read_section = False
                     break
         
         for element in interface_status:
-            # modify_interface_status.append(re.split(r'\s{1,}', re.sub(separator, replace, element)))
-            items = re.sub(separator, replace, element)
-            items = re.split(r'\s{1,}',items)
+            items = re.sub(remove_substring, replace_string, element) # remove substring and replace with empty string
+            items = re.split(r'\s{1,}',items) # split a string at least 1 whitespace
             # temp = re.findall('.*?()', temp)
             # items = list(filter(None, items))
 
-            if len(items) == 6:
+            if len(items) == 6:    # if column number = 6, then combine/join column
                 items[4:6] = [''.join(items[4:6])]
             
             modify_interface_status.append(items)
