@@ -1,23 +1,31 @@
 import pandas as pd
 
-class DataFrameBuilder:
+class DataFrameBuilder():
 
-    def __init__(self, dataframe):
-        self.dataframe = dataframe
-        self.columns = []
+    def __init__(self, df):            # df = dataframe
+        self.df = df
 
-    def __add__(self, inp):
-        if not (self.dataframe.empty or inp.dataframe.empty):
-            self.dataframe = self.dataframe.merge(inp.dataframe, how = 'left', on=0)
-        return DataFrameBuilder(self.dataframe)
+    def __add__(self, inp):             # merge dataframe by + operator/ inp = input
+        side = '' 
+        if not (self.df.empty or inp.df.empty):
+            if len(self.df.index) > len(inp.df.index):
+                side = 'left'
+            else: 
+                side = 'right'
+        
+            self.df = self.df.merge(inp.df, how = side, left_on='Interface', right_on='Port')
+        return DataFrameBuilder(self.df)
 
-    def dropColumn(self, cols):
-        self.dataframe.drop(columns = cols, inplace = True)
-    
-    def addColumn(self, cols):
-        self.dataframe.columns = cols
-    
-    def insertColumn(self, col_index, col_name, value):
-        self.dataframe.insert(col_index, col_name, value)
-
+    def newHeader(self):
+        if not self.df.empty:
+            new_header = self.df.iloc[0] 
+            self.df = self.df[1:]
+            self.df.columns = new_header
    
+    def insertColumn(self, hostname, model, serial, version):
+        factor = ['']*(len(self.df)-1)
+        self.df.insert( 0,'SW Version', [version]+factor)
+        self.df.insert( 0,'Serial No.', [serial]+factor)
+        self.df.insert( 0,'Model', [model]+factor)
+        self.df.insert( 0,'Hostname', [hostname]+factor)
+

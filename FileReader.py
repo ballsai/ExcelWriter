@@ -68,7 +68,9 @@ class FileReader:
                 read_section = True
                 continue
             elif read_section:
-                if not (self.hostname in line):
+                if re.search(command_substring, line):
+                    continue
+                elif not (self.hostname in line):
                     if re.search(interfaces_substring, line): 
                         interface_description.append(line)
                 else:
