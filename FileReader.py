@@ -52,7 +52,8 @@ class FileReader:
         for line in self.text:
             if re.search(substring, line):
                 self.version = re.sub(substring, '', line)
-                self.version = re.sub(',| RE\w+', '', self.version)
+                self.version = re.sub('(,*\sRELEASE|\s-\sExtended).*' ,'', self.version)
+                print(self.version)
                 break
         return self.version
 

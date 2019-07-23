@@ -2,7 +2,6 @@ import os
 import re
 import pandas as pd 
 from tabulate import tabulate
-from openpyxl import load_workbook
 
 from FileReader import FileReader
 from DataFrameBuilder import DataFrameBuilder
@@ -50,14 +49,13 @@ def main():
                     # excel = ExcelBuilder(merge_frame.df, hostname)
                     # excel.writeExcel()
 
-                    if not version:
-                        log.append(hostname)
+                    log.append(hostname+' : '+version)
             
     except IOError:
         print('cannot open directory name ',directory )
     
     try:
-        with open("no_version.txt", "w") as output:
+        with open("./Log/log.txt", "w") as output:
             output.write('\n'.join(log))
     except IOError:
         print('cannot write file name log.txt')
