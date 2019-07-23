@@ -5,7 +5,7 @@ class DataFrameBuilder():
     def __init__(self, df):            # df = dataframe
         self.df = df
 
-    def __add__(self, inp):             # merge dataframe by + operator/ inp = input
+    def __add__(self, inp):             # merge dataframe by + operator, inp = input
         side = '' 
         if not (self.df.empty or inp.df.empty):
             if len(self.df.index) > len(inp.df.index):

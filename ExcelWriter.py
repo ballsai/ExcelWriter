@@ -1,50 +1,65 @@
 import os
+import re
 import pandas as pd 
+from tabulate import tabulate
 from openpyxl import load_workbook
 
-class ExcelWriter:
+from FileReader import FileReader
+from DataFrameBuilder import DataFrameBuilder
+from ExcelBuilder import ExcelBuilder
+
+def main():
+    log = []
+    directory = '../All Configure/'
+    except_file = 'THCBSLSUIN08,no-ip,console,4_log,.txt'
+
+    try:
+        with os.scandir(directory) as entries:
+            for entry in entries:
+                if entry.name == except_file:
+                    continue
+
+                f = FileReader(directory + entry.name)
+                f.readFile()
+
+                hostname = f.requiredHostname()
+                model = f.requiredModel()
+                serial = f.requiredSerial()
+                version = f.requiredVersion()
+
+                interface_description = f.requiredInterfaceDescription()
+                interface_status = f.requiredInterfaceStatus()
+
+                required_file = f.isRequired(interface_description) # if '.*#show interface description' exist (interface_description is not an empty list), it is a required file
+
+                if required_file:
+
+                    # description = pd.DataFrame(interface_description) # create dataframe
+                    # description_frame = DataFrameBuilder(description) # dataframe object
+                    # description_frame.newHeader() # set first row to header/column name 
+
+                    # status = pd.DataFrame(interface_status)  # create dataframe
+                    # status_frame = DataFrameBuilder(status) # dataframe object
+                    # status_frame.newHeader() # set first row to header/column name
+
+                    # merge_frame = description_frame + status_frame    # merge description_dataframe and status_frame
+                    # merge_frame.insertColumn(hostname, model, serial, version)
+                   
+                    # # print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
+
+                    # excel = ExcelBuilder(merge_frame.df, hostname)
+                    # excel.writeExcel()
+
+                    if not version:
+                        log.append(hostname)
+            
+    except IOError:
+        print('cannot open directory name ',directory )
     
-    def __init__(self, frame, filename):
-        self.frame = frame
-        self.filename = filename
-        self.path = '../ExcelFile/'
-        self.format = '.xlsx'
+    try:
+        with open("no_version.txt", "w") as output:
+            output.write('\n'.join(log))
+    except IOError:
+        print('cannot write file name log.txt')
 
-    def writeExcel(self):
-        file_path = self.path+self.filename+self.format
-        try:
-            if os.path.exists(file_path):
-                self.filename += '_new'
-                file_path = self.path+self.filename+self.format
-            
-            writer = pd.ExcelWriter(file_path, engine='xlsxwriter')
-            self.frame.to_excel(writer, sheet_name='Sheet1', index=False)
-            
-            workbook  = writer.book
-            worksheet = writer.sheets['Sheet1']
-
-            worksheet.set_column('A:D', 18)
-            worksheet.set_column('E:E', 10)
-            worksheet.set_column('F:F', 13)
-            worksheet.set_column('G:G', 10)
-            worksheet.set_column('H:H', 44)
-            worksheet.set_column('I:L', 10)
-            worksheet.set_column('M:M', 20)
-
-            header_format = workbook.add_format({
-                            'bold': True,
-                            'text_wrap': True,
-                            'valign': 'top',
-                            'bg_color': '#000000',
-                            'font_color': '#FFFFFF',
-                            'border': 1,
-                            'border_color': '#828282'})
-            
-            for col_num, value in enumerate(self.frame.columns.values):
-                worksheet.write(0, col_num, value, header_format)
-
-            writer.save()
-            
-            print('successful writing file name %s '%self.filename)
-        except:
-            print('cannot writing file name %s'%self.filename )
+main()        
