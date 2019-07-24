@@ -79,7 +79,7 @@ class FileReader:
                     break                                       # break loop
         
         for element in interface_description:
-            if element == interface_description[0]:             # if label name, then split label name to column name
+            if element == interface_description[0]:             # if first row, then split first row to column name
                 items = element.split()
             else: 
                 items = re.split(r'\s{4}', element)             # split a string by 4 whitespaces

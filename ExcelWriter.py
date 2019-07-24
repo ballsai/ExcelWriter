@@ -41,10 +41,10 @@ def main():
                     merge_frame = description_frame + status_frame              # merge description_dataframe and status_frame
                     merge_frame.insertColumn(hostname, model, serial, version)  # insert column and value 
                    
-                    # print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
+                    print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
 
-                    excel = ExcelBuilder(merge_frame.df, hostname)      # create object
-                    excel.writeExcel()                                  # dataframe to excel file
+                    # excel = ExcelBuilder(merge_frame.df, hostname)      # create object
+                    # excel.writeExcel()                                  # dataframe to excel file
 
                     # log.append(hostname+' : '+version)
             

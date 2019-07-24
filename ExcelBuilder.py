@@ -12,16 +12,17 @@ class ExcelBuilder:
     def writeExcel(self):
         file_path = self.path+self.filename+self.format
         try:
-            if os.path.exists(file_path):
-                self.filename += '(copy)'
+            if os.path.exists(file_path):                          # check if file path is exist in folder
+                self.filename += '(copy)'                          # then do not overwrite but make a copy file 
                 file_path = self.path+self.filename+self.format
             
             writer = pd.ExcelWriter(file_path, engine='xlsxwriter')
-            self.frame.to_excel(writer, sheet_name='Sheet1', index=False)
+            self.frame.to_excel(writer, sheet_name='Sheet1', index=False) 
             
             workbook  = writer.book
             worksheet = writer.sheets['Sheet1']
 
+            # set columns width
             worksheet.set_column('A:D', 18)
             worksheet.set_column('E:E', 10)
             worksheet.set_column('F:F', 13)
@@ -30,6 +31,7 @@ class ExcelBuilder:
             worksheet.set_column('I:L', 10)
             worksheet.set_column('M:M', 20)
 
+            # set header column
             header_format = workbook.add_format({
                             'bold': True,
                             'text_wrap': True,
@@ -42,7 +44,7 @@ class ExcelBuilder:
             for col_num, value in enumerate(self.frame.columns.values):
                 worksheet.write(0, col_num, value, header_format)
 
-            writer.save()
+            writer.save()   # save as .xlsx file
             
             print('successful writing file name %s '%self.filename)
         except:
