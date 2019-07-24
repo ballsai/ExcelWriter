@@ -13,7 +13,7 @@ class ExcelBuilder:
         file_path = self.path+self.filename+self.format
         try:
             if os.path.exists(file_path):
-                self.filename += '_new'
+                self.filename += '(copy)'
                 file_path = self.path+self.filename+self.format
             
             writer = pd.ExcelWriter(file_path, engine='xlsxwriter')

@@ -10,14 +10,11 @@ from ExcelBuilder import ExcelBuilder
 def main():
     log = []
     directory = '../All Configure/'
-    except_file = 'THCBSLSUIN08,no-ip,console,4_log,.txt'
 
     try:
         with os.scandir(directory) as entries:
             for entry in entries:
-                if entry.name == except_file:
-                    continue
-
+            
                 f = FileReader(directory + entry.name)
                 f.readFile()
 
@@ -33,16 +30,16 @@ def main():
 
                 if required_file:
 
-                    description = pd.DataFrame(interface_description)   # create dataframe
-                    description_frame = DataFrameBuilder(description)   # dataframe object
-                    description_frame.newHeader()                       # set first row to header/column name 
+                    description = pd.DataFrame(interface_description)           # create dataframe
+                    description_frame = DataFrameBuilder(description)           # dataframe object
+                    description_frame.newHeader()                               # set first row to header/column name 
 
-                    status = pd.DataFrame(interface_status)             # create dataframe
-                    status_frame = DataFrameBuilder(status)             # dataframe object
-                    status_frame.newHeader()                            # set first row to header/column name
+                    status = pd.DataFrame(interface_status)                     # create dataframe
+                    status_frame = DataFrameBuilder(status)                     # dataframe object
+                    status_frame.newHeader()                                    # set first row to header/column name
 
-                    merge_frame = description_frame + status_frame      # merge description_dataframe and status_frame
-                    merge_frame.insertColumn(hostname, model, serial, version)
+                    merge_frame = description_frame + status_frame              # merge description_dataframe and status_frame
+                    merge_frame.insertColumn(hostname, model, serial, version)  # insert column and value 
                    
                     # print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
 
