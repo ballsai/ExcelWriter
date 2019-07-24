@@ -33,23 +33,23 @@ def main():
 
                 if required_file:
 
-                    # description = pd.DataFrame(interface_description) # create dataframe
-                    # description_frame = DataFrameBuilder(description) # dataframe object
-                    # description_frame.newHeader() # set first row to header/column name 
+                    description = pd.DataFrame(interface_description)   # create dataframe
+                    description_frame = DataFrameBuilder(description)   # dataframe object
+                    description_frame.newHeader()                       # set first row to header/column name 
 
-                    # status = pd.DataFrame(interface_status)  # create dataframe
-                    # status_frame = DataFrameBuilder(status) # dataframe object
-                    # status_frame.newHeader() # set first row to header/column name
+                    status = pd.DataFrame(interface_status)             # create dataframe
+                    status_frame = DataFrameBuilder(status)             # dataframe object
+                    status_frame.newHeader()                            # set first row to header/column name
 
-                    # merge_frame = description_frame + status_frame    # merge description_dataframe and status_frame
-                    # merge_frame.insertColumn(hostname, model, serial, version)
+                    merge_frame = description_frame + status_frame      # merge description_dataframe and status_frame
+                    merge_frame.insertColumn(hostname, model, serial, version)
                    
-                    # # print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
+                    # print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
 
-                    # excel = ExcelBuilder(merge_frame.df, hostname)
-                    # excel.writeExcel()
+                    excel = ExcelBuilder(merge_frame.df, hostname)      # create object
+                    excel.writeExcel()                                  # dataframe to excel file
 
-                    log.append(hostname+' : '+version)
+                    # log.append(hostname+' : '+version)
             
     except IOError:
         print('cannot open directory name ',directory )
