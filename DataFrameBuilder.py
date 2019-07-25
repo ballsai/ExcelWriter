@@ -1,5 +1,7 @@
 import pandas as pd
 
+from FileReader import FileReader
+
 class DataFrameBuilder():
 
     def __init__(self, df):            # df = dataframe
@@ -37,4 +39,12 @@ class DataFrameBuilder():
         self.df.insert( 0,'Serial No.', [serial]+factor)
         self.df.insert( 0,'Model', [model]+factor)
         self.df.insert( 0,'Hostname', [hostname]+factor)
+    
+    def deleteColumn(self):
+        try:
+            del self.df['Port']
+        except:
+            print('[Port] does not exist')
+        else:
+            print('can delete column')    
 

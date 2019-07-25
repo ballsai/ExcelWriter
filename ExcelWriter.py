@@ -40,6 +40,7 @@ def main():
 
                     merge_frame = description_frame + status_frame              # merge description_dataframe and status_frame
                     merge_frame.insertColumn(hostname, model, serial, version)  # insert column and value 
+                    merge_frame.deleteColumn()                                  # delete column and value            
                    
                     print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
 
