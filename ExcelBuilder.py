@@ -3,18 +3,18 @@ import pandas as pd
 
 class ExcelBuilder:
     
-    def __init__(self, frame, filename):
+    def __init__(self, frame, filename, dst):
         self.frame = frame
         self.filename = filename
-        self.path = '../ExcelFile/'
+        self.dst = dst + '/'
         self.format = '.xlsx'
 
     def writeExcel(self):
-        file_path = self.path+self.filename+self.format
+        file_path = self.dst+self.filename+self.format
         try:
             if os.path.exists(file_path):                          # check if file path is exist in folder
                 self.filename += '(copy)'                          # then do not overwrite but make a copy file 
-                file_path = self.path+self.filename+self.format
+                file_path = self.dst+self.filename+self.format
             
             writer = pd.ExcelWriter(file_path, engine='xlsxwriter')
             self.frame.to_excel(writer, sheet_name='Sheet1', index=False) 

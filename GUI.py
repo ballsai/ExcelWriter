@@ -1,5 +1,5 @@
+import sys
 import PySimpleGUI as sg
-from subprocess import call, Popen
 
 class GUI:
 
@@ -30,10 +30,8 @@ class GUI:
 
 if __name__ == "__main__":
     result = GUI()
-    _dir = result.directoryBrowse()
+    dir_dict = result.directoryBrowse()
     try:
-        # exec(open('ExcelWriter.py').read(), _dir)
-        call(['python', 'ExcelWriter.py', '_dir'])
-
+        exec(open('ExcelWriter.py').read(), dir_dict)
     except TypeError:
         print('\'NoneType\'')

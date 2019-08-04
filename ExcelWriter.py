@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import pandas as pd 
 from tabulate import tabulate
@@ -9,17 +10,19 @@ from ExcelBuilder import ExcelBuilder
 
 class ExcelWriter:
 
-    def main(self):
-        log = []
-        # directory = '../All Configure/'
-        src = _dir['source']+'/'
-        dst = _dir['destination']+'/'
+    def __init__(self, source, destination):
+        self.src = source
+        self.dst = destination
+        self.log = []
 
+    def writer(self):
+        # print(self.src)
+        # print(self.dst)
         try:
-            with os.scandir(src) as entries:
+            with os.scandir(self.src) as entries:
                 for entry in entries:
                 
-                    f = FileReader(src + entry.name)
+                    f = FileReader(self.src + '/' + entry.name)
                     f.readFile()
 
                     hostname = f.requiredHostname()
@@ -48,7 +51,7 @@ class ExcelWriter:
                     
                         print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
 
-                        excel = ExcelBuilder(merge_frame.df, hostname)      # create object
+                        excel = ExcelBuilder(merge_frame.df, hostname, self.dst)      # create object
                         excel.writeExcel()                                  # dataframe to excel file
 
                         # log.append(hostname+' : '+version)
@@ -58,9 +61,12 @@ class ExcelWriter:
         
         try:
             with open("./Log/log.txt", "w") as output:
-                output.write('\n'.join(log))
+                output.write('\n'.join(self.log))
         except IOError:
             print('cannot write file name log.txt')
 
-if __name__ == '__main__':
-    ExcelWriter().main()
+def main():
+    excel = ExcelWriter(source, destination)
+    excel.writer()
+
+main()
