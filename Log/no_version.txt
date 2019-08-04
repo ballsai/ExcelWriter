@@ -1,7 +1,0 @@
-LS_6500_msfc2
-LS_6500_msfc2
-Reuters_SW_F11
-SW_ATM_MODULE_2
-SW_Subsidiary
-SW_ThirdParty
-THCBSLSUDC38

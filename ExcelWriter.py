@@ -7,55 +7,60 @@ from FileReader import FileReader
 from DataFrameBuilder import DataFrameBuilder
 from ExcelBuilder import ExcelBuilder
 
-def main():
-    log = []
-    directory = '../All Configure/'
+class ExcelWriter:
 
-    try:
-        with os.scandir(directory) as entries:
-            for entry in entries:
-            
-                f = FileReader(directory + entry.name)
-                f.readFile()
+    def main(self):
+        log = []
+        # directory = '../All Configure/'
+        src = _dir['source']+'/'
+        dst = _dir['destination']+'/'
 
-                hostname = f.requiredHostname()
-                model = f.requiredModel()
-                serial = f.requiredSerial()
-                version = f.requiredVersion()
+        try:
+            with os.scandir(src) as entries:
+                for entry in entries:
+                
+                    f = FileReader(src + entry.name)
+                    f.readFile()
 
-                interface_description = f.requiredInterfaceDescription()
-                interface_status = f.requiredInterfaceStatus()
+                    hostname = f.requiredHostname()
+                    model = f.requiredModel()
+                    serial = f.requiredSerial()
+                    version = f.requiredVersion()
 
-                required_file = f.isRequired(interface_description) # if '.*#show interface description' exist (interface_description is not an empty list), it is a required file
+                    interface_description = f.requiredInterfaceDescription()
+                    interface_status = f.requiredInterfaceStatus()
 
-                if required_file:
+                    required_file = f.isRequired(interface_description) # if '.*#show interface description' exist (interface_description is not an empty list), it is a required file
 
-                    description = pd.DataFrame(interface_description)           # create dataframe
-                    description_frame = DataFrameBuilder(description)           # dataframe object
-                    description_frame.newHeader()                               # set first row to header/column name 
+                    if required_file:
 
-                    status = pd.DataFrame(interface_status)                     # create dataframe
-                    status_frame = DataFrameBuilder(status)                     # dataframe object
-                    status_frame.newHeader()                                    # set first row to header/column name
+                        description = pd.DataFrame(interface_description)           # create dataframe
+                        description_frame = DataFrameBuilder(description)           # dataframe object
+                        description_frame.newHeader()                               # set first row to header/column name 
 
-                    merge_frame = description_frame + status_frame              # merge description_dataframe and status_frame
-                    merge_frame.insertColumn(hostname, model, serial, version)  # insert column and value 
-                    merge_frame.deleteColumn()                                  # delete column and value            
-                   
-                    print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
+                        status = pd.DataFrame(interface_status)                     # create dataframe
+                        status_frame = DataFrameBuilder(status)                     # dataframe object
+                        status_frame.newHeader()                                    # set first row to header/column name
 
-                    # excel = ExcelBuilder(merge_frame.df, hostname)      # create object
-                    # excel.writeExcel()                                  # dataframe to excel file
+                        merge_frame = description_frame + status_frame              # merge description_dataframe and status_frame
+                        merge_frame.insertColumn(hostname, model, serial, version)  # insert column and value 
+                        merge_frame.deleteColumn()                                  # delete column and value            
+                    
+                        print(tabulate(merge_frame.df, headers='keys', tablefmt='psql'))  # display table
 
-                    # log.append(hostname+' : '+version)
-            
-    except IOError:
-        print('cannot open directory name ',directory )
-    
-    try:
-        with open("./Log/log.txt", "w") as output:
-            output.write('\n'.join(log))
-    except IOError:
-        print('cannot write file name log.txt')
+                        excel = ExcelBuilder(merge_frame.df, hostname)      # create object
+                        excel.writeExcel()                                  # dataframe to excel file
 
-main()        
+                        # log.append(hostname+' : '+version)
+                
+        except IOError:
+            print('cannot open directory name ',directory )
+        
+        try:
+            with open("./Log/log.txt", "w") as output:
+                output.write('\n'.join(log))
+        except IOError:
+            print('cannot write file name log.txt')
+
+if __name__ == '__main__':
+    ExcelWriter().main()

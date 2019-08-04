@@ -27,7 +27,7 @@ class ExcelBuilder:
             worksheet.set_column('E:E', 10)
             worksheet.set_column('F:F', 13)
             worksheet.set_column('G:G', 10)
-            worksheet.set_column('H:H', 44)
+            worksheet.set_column('H:H', 35)
             worksheet.set_column('I:L', 10)
             worksheet.set_column('M:M', 20)
 
