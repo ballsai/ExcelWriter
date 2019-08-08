@@ -30,6 +30,7 @@ class FileReader:
                 self.hostname = re.sub(substring, '', line) # get only hostname without substring
                 break                                       # break loop
         return self.hostname
+        
 
     def requiredModel(self):                                # find model
         substring = '.*(M|m)odel (N|n)umber.*:'
@@ -53,10 +54,9 @@ class FileReader:
             if re.search(substring, line):                   # if found substring in line, then this line include software version
                 self.version = re.sub(substring, '', line)   # get only serial number
                 self.version = re.sub('(,*\sRELEASE|\s-\sExtended).*' ,'', self.version)
-                # print(self.version)
                 break                                        # break loop
         return self.version
-
+   
     def requiredInterfaceDescription(self):                     # find interface description section
         command_substring = '.*#show interface description'
         interfaces_substring = '(Interface|Port|(Fa)|(Gi)|(Po)|(Te)|(Vl)).*'

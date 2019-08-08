@@ -6,17 +6,17 @@ class ExcelBuilder:
     def __init__(self, frame, filename, dst):
         self.frame = frame
         self.filename = filename
-        self.dst = dst + '/'
+        self.dst = '%s\\'%(dst)
         self.format = '.xlsx'
 
     def writeExcel(self):
-        file_path = self.dst+self.filename+self.format
+        path_name = '%s%s%s'%(self.dst, self.filename, self.format)
         try:
-            if os.path.exists(file_path):                          # check if file path is exist in folder
-                self.filename += '(copy)'                          # then do not overwrite but make a copy file 
-                file_path = self.dst+self.filename+self.format
+            if os.path.exists(path_name):                          # check if file path is exist in folder
+                string = '_(2)'                          # then do not overwrite but make a copy file 
+                path_name = '%s%s%s%s'%(self.dst, self.filename, string, self.format)
             
-            writer = pd.ExcelWriter(file_path, engine='xlsxwriter')
+            writer = pd.ExcelWriter(path_name, engine='xlsxwriter')
             self.frame.to_excel(writer, sheet_name='Sheet1', index=False) 
             
             workbook  = writer.book
@@ -29,7 +29,7 @@ class ExcelBuilder:
             worksheet.set_column('G:G', 10)
             worksheet.set_column('H:H', 35)
             worksheet.set_column('I:L', 10)
-            worksheet.set_column('M:M', 20)
+            worksheet.set_column('M:M', 23)
 
             # set header column
             header_format = workbook.add_format({
@@ -46,6 +46,6 @@ class ExcelBuilder:
 
             writer.save()   # save as .xlsx file
             
-            print('successful writing file name %s '%self.filename)
+            print('%s  Completed'%self.filename)
         except:
-            print('cannot writing file name %s'%self.filename )
+            print('%s Failed'%self.filename )
